@@ -1,5 +1,6 @@
 import openpyxl as xl;
 from openpyxl import load_workbook
+from openpyxl import Workbook
 import re
 
 class Main:
@@ -7,16 +8,16 @@ class Main:
     def file_type(self):
         self._raw= self._wb1.cell(row=1,column=1)
         if self._raw.value==None:
-            print("ISRACARD ")
+            print("ISRACARD")
             self.isracard()
         else:
-            print("VISA ")
+            print("VISA")
             self.visa()
 
 
     def read_file(self):
-        #self._fileName = "C:\OM\exampleVisaCard.xlsx"
-        self._fileName = "C:\OM\exampleMasterCard.xlsx"
+        self._fileName = "C:\OM\exampleVisaCard.xlsx"
+        #self._fileName = "C:\OM\exampleMasterCard.xlsx"
         self._wb = load_workbook(self._fileName)
         self._wb1 = self._wb.active
         self._mr = self._wb1.max_row
@@ -30,25 +31,25 @@ class Main:
         self._card = self._wb1.cell(row=2,column=1)
         self._s = str(self._card.value).split(",")[1].split(" ")[3]
         self._card_re = str(re.findall(r'[0-9]{4}', self._s))
-        self.output_file_visa()
-
+        #self.output_file_visa()
+        self.output_file()
         for i in range(4,self._mr):
             for j in range(1, 4):
                 # reading cell value from source excel file
                 self._c = self._wb1.cell(row=i, column=j)
 
                 # writing the read value to destination excel file
-                self._ws2.cell(row=i - 2, column=j).value = self._c.value
-                self._ws2.cell(row=i - 2, column=5).value = self._card_re
+                self._ws.cell(row=i - 2, column=j).value = self._c.value
+                self._ws.cell(row=i - 2, column=5).value = self._card_re
 
-        self._wb2.save(str(self._outputFile2))
+        self._wb.save(filename="C:\OM\outputVisa2.xlsx")
 
     def isracard(self):
         self._wb1.delete_cols(3, 2)
         self._sheet=self._wb1
         self._alist=[]
         self._blist=[]
-        self.output_file_isracard()
+        self.output_file()
         for i in range(4, self._mr):
             self._b3 = self._sheet.cell(row=i, column=1)
             self._s = str(self._b3.value).split(" ")
@@ -69,29 +70,27 @@ class Main:
                     # reading cell value from source excel file
                     self._c = self._wb1.cell(row=i, column=j)
                     # writing the read value to destination excel file
-                    self._ws3.cell(row=i - 5, column=j).value = self._c.value
-                    self._ws3.cell(row=i - 5, column=5).value = str(self._blist[a])
+                    self._ws.cell(row=i - 5, column=j).value = self._c.value
+                    self._ws.cell(row=i - 5, column=5).value = str(self._blist[a])
 
         for j in range(1, 4):
             for i in range(1, self._mr):
-                if self._ws3.cell(row=i, column=1).value is None:
-                    self._ws3.delete_rows(i)
+                if self._ws.cell(row=i, column=1).value is None:
+                    self._ws.delete_rows(i)
                 else:
                     continue
 
-        self._wb3.save(str(self._outputFile3))
+        self._wb.save(filename="C:\OM\outputIsracard4.xlsx")
 
 
-    def output_file_visa(self):
-        self._outputFile2 = "C:\OM\outputVisa.xlsx"
-        self._wb2 = load_workbook(self._outputFile2)
-        self._ws2 = self._wb2.active
-
-
-    def output_file_isracard(self):
-        self._outputFile3 = "C:\OM\outputIsracard.xlsx"
-        self._wb3 = load_workbook(self._outputFile3)
-        self._ws3 = self._wb3.active
+    def output_file(self):
+        self._wb = Workbook()
+        self._ws = self._wb.active
+        self._x = ['תאריך עסקה', 'שם בית העסק', 'סכום עסקה', 'קטגוריה', 'מספר כרטיס']
+        self._counter = 1
+        for i in self._x:
+            self._ws.cell(row=1, column=self._counter, value=i)
+            self._counter += 1
 
 
 Object = Main()
