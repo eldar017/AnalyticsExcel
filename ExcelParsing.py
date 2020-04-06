@@ -7,7 +7,7 @@ class Main:
     def file_type(self):
         self._raw= self._wb1.cell(row=1,column=1)
         if self._raw.value==None:
-            print("ISRACARD")
+            print("ISRACARD ")
             self.isracard()
         else:
             print("VISA ")
