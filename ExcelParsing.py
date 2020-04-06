@@ -10,7 +10,7 @@ class Main:
             print("ISRACARD")
             self.isracard()
         else:
-            print("VISA")
+            print("VISA ")
             self.visa()
 
 
